@@ -235,7 +235,7 @@ SUB InitializeGame
     CLS
     COLOR 9
     LOCATE 1, 1
-    PRINT "PBBlocks v1.00 - by: Peter Swinkels, ***2021***"
+    PRINT "PBBlocks v1.01 - by: Peter Swinkels, ***2021***"
 
     CreateShape
 
@@ -359,8 +359,11 @@ END SUB
 FUNCTION ShapeCanMove (MapV AS STRING, XDirection AS INTEGER, YDirection AS INTEGER) AS INTEGER
 DIM BlockX AS LOCAL INTEGER
 DIM BlockY AS LOCAL INTEGER
+DIM CanMove AS LOCAL INTEGER
 DIM PitX AS LOCAL INTEGER
 DIM PitY AS LOCAL INTEGER
+
+    CanMove = %TRUE
 
     FOR BlockY = 0 TO %LASTSIDEBLOCK
         FOR BlockX = 0 TO %LASTSIDEBLOCK
@@ -369,17 +372,18 @@ DIM PitY AS LOCAL INTEGER
                 PitY = (ShapeY + BlockY) + YDirection
                 IF PitX >= 0 AND PitX < %PITWIDTH AND PitY >= 0 AND PitY < %PITHEIGHT THEN
                     IF ISFALSE MID$(Pit, (((%PITWIDTH * PitY) + PitX) + 1), 1) = "0" THEN
-                        ShapeCanMove = %FALSE
-                        EXIT FUNCTION
+                        CanMove = %FALSE
+                        EXIT FOR
                     END IF
                 ELSEIF PitX < 0 OR PitX >= %PITWIDTH OR PitY >= %PITHEIGHT THEN
-                    ShapeCanMove = %FALSE
-                    EXIT FUNCTION
+                    CanMove = %FALSE
+                    EXIT FOR
                 END IF
             END IF
         NEXT BlockX
+        IF NOT CanMove THEN EXIT FOR
     NEXT BlockY
 
-    ShapeCanMove = %TRUE
+    ShapeCanMove = CanMove
 END FUNCTION
 
